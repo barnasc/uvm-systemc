@@ -32,6 +32,8 @@
 
 #include "uvmsc/base/uvm_globals.h"
 #include "uvmsc/base/uvm_root.h"
+#include "uvmsc/base/uvm_coreservice_t.h"
+#include "uvmsc/base/uvm_default_coreservice_t.h"
 #include "uvmsc/conf/uvm_config_db.h"
 
 #if !defined(_MSC_VER)
@@ -66,7 +68,12 @@ namespace uvm {
 
 void run_test( const std::string& test_name )
 {
-  uvm_root::get()->run_test(test_name);
+  uvm_root* top;
+  uvm_coreservice_t* cs;
+  cs = uvm_coreservice_t::get();
+  top = cs->get_root();
+
+  top->run_test(test_name);
 }
 
 //------------------------------------------------------------------------------
@@ -77,7 +84,9 @@ void run_test( const std::string& test_name )
 
 void print_topology( uvm_printer* printer )
 {
-  uvm_root::get()->print_topology(printer);
+  uvm_coreservice_t* cs = uvm_coreservice_t::get();
+  uvm_root* top = cs->get_root();
+  top->print_topology(printer);
 }
 
 //------------------------------------------------------------------------------
@@ -108,47 +117,90 @@ bool uvm_report_enabled( const int& verbosity,
                          const uvm_severity& severity,
                          const std::string& id )
 {
-  return uvm_root::get()->uvm_report_enabled(verbosity,severity,id);
+  uvm_coreservice_t* cs = uvm_coreservice_t::get();
+  uvm_root* top = cs->get_root();
+
+  return top->uvm_report_enabled(verbosity,severity,id);
 }
 
+void uvm_report( uvm_severity severity,
+                 const std::string& id,
+                 const std::string& message,
+                 int verbosity,
+                 const std::string& filename,
+                 int line,
+                 const std::string& context_name,
+                 bool report_enabled_checked)
+{
+  uvm_coreservice_t* cs = uvm_coreservice_t::get();
+  uvm_root* top = cs->get_root();
+
+  if( verbosity == -1)
+    verbosity = (severity == UVM_ERROR) ? UVM_LOW :
+      (severity == UVM_FATAL) ? UVM_NONE : UVM_MEDIUM;
+
+  top->uvm_report(severity, id, message, verbosity, filename, line, context_name, report_enabled_checked);
+}
 
 // Function: uvm_report_info
 
 void uvm_report_info( const std::string& id,
                       const std::string& message,
                       int verbosity,
-                      const std::string& fname,
-                      int line )
+                      const std::string& filename,
+                      int line,
+                      const std::string& context_name,
+                      bool report_enabled_checked )
 {
-  uvm_root::get()->uvm_report_info(id, message, verbosity, fname, line);
+  uvm_coreservice_t* cs = uvm_coreservice_t::get();
+  uvm_root* top = cs->get_root();
+
+  top->uvm_report_info(id, message, verbosity, filename, line);
 }
 
 
 void uvm_report_warning( const std::string& id,
                          const std::string& message,
                          int verbosity,
-                         const std::string& fname,
-                         int line )
+                         const std::string& filename,
+                         int line,
+                         const std::string& context_name,
+                         bool report_enabled_checked )
+
 {
-  uvm_root::get()->uvm_report_warning(id, message, verbosity, fname, line);
+  uvm_coreservice_t* cs = uvm_coreservice_t::get();
+  uvm_root* top = cs->get_root();
+
+  top->uvm_report_warning(id, message, verbosity, filename, line);
 }
 
 void uvm_report_error( const std::string& id,
                        const std::string& message,
                        int verbosity,
-                       const std::string& fname,
-                       int line )
+                       const std::string& filename,
+                       int line,
+                       const std::string&  context_name,
+                       bool report_enabled_checked )
 {
-  uvm_root::get()->uvm_report_error(id, message, verbosity, fname, line);
+  uvm_coreservice_t* cs = uvm_coreservice_t::get();
+  uvm_root* top = cs->get_root();
+
+  top->uvm_report_error(id, message, verbosity, filename, line);
 }
 
 void uvm_report_fatal( const std::string& id,
                        const std::string& message,
                        int verbosity,
-                       const std::string& fname,
-                       int line )
+                       const std::string& filename,
+                       int line,
+                       const std::string& context_name,
+                       bool report_enabled_checked )
+
 {
-  uvm_root::get()->uvm_report_fatal(id, message, verbosity, fname, line);
+  uvm_coreservice_t* cs = uvm_coreservice_t::get();
+  uvm_root* top = cs->get_root();
+
+  top->uvm_report_fatal(id, message, verbosity, filename, line);
 }
 
 // TODO temporary set verbosity level. Should be moved to
@@ -156,7 +208,10 @@ void uvm_report_fatal( const std::string& id,
 
 void uvm_set_verbosity_level(int verbosity_level)
 {
-  uvm_root::get()->set_report_verbosity_level_hier(verbosity_level);
+  uvm_coreservice_t* cs = uvm_coreservice_t::get();
+  uvm_root* top = cs->get_root();
+
+  top->set_report_verbosity_level_hier(verbosity_level);
 }
 
 

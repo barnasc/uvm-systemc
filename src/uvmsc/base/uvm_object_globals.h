@@ -387,13 +387,14 @@ typedef int uvm_action;
 
 typedef enum
 {
-  UVM_NO_ACTION = 0, // 0b000000 
-  UVM_DISPLAY   = 1, // 0b000001
-  UVM_LOG       = 2, // 0b000010
-  UVM_COUNT     = 4, // 0b000100
-  UVM_EXIT      = 8, // 0b001000
-  UVM_CALL_HOOK = 16, // 0b010000
-  UVM_STOP      = 32 // 0b100000
+  UVM_NO_ACTION = 0,  // 0b0000000
+  UVM_DISPLAY   = 1,  // 0b0000001
+  UVM_LOG       = 2,  // 0b0000010
+  UVM_COUNT     = 4,  // 0b0000100
+  UVM_EXIT      = 8,  // 0b0001000
+  UVM_CALL_HOOK = 16, // 0b0010000
+  UVM_STOP      = 32, // 0b0100000
+  UVM_RM_RECORD = 64  // 0b1000000
 } uvm_action_type;
 
 
@@ -515,6 +516,7 @@ typedef uvm_bitstream_t_select<((UVM_MAX_STREAMBITS)<=64)>::type uvm_bitstream_t
 
 
 typedef sc_dt::sc_uint<64> uvm_integral_t;
+
 
 typedef std::ostream* UVM_FILE;
 

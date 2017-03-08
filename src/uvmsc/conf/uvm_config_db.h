@@ -34,6 +34,9 @@
 #include "uvmsc/conf/uvm_resource_db.h"
 #include "uvmsc/conf/uvm_config_db_options.h"
 #include "uvmsc/base/uvm_globals.h"
+#include "uvmsc/base/uvm_coreservice_t.h"
+#include "uvmsc/base/uvm_default_coreservice_t.h"
+#include "uvmsc/base/uvm_root.h"
 #include "uvmsc/phasing/uvm_phase.h"
 
 namespace uvm {
@@ -221,6 +224,8 @@ void uvm_config_db<T>::set( uvm_component* cntxt,
     uvm_root* top = NULL;
     uvm_phase* curr_phase = NULL;
     uvm_resource<T>* r = NULL;
+    uvm_coreservice_t* cs = NULL;
+
     bool exists = false;
     std::string loc_instname = inst_name; // local instance name, input is const
     std::string setstr = "set";
@@ -230,7 +235,9 @@ void uvm_config_db<T>::set( uvm_component* cntxt,
     //process p = process::self();
     //string rstate = p.get_randstate();
 
-    top = uvm_root::get();
+    cs = uvm_coreservice_t::get();
+    top = cs->get_root();
+
     curr_phase = top->m_current_phase;
 
     if( cntxt == NULL )
@@ -316,8 +323,13 @@ bool uvm_config_db<T>::get( uvm_component* cntxt,
   uvm_resource<T>* r = NULL;
   uvm_resource_pool* rp = uvm_resource_pool::get();
   uvm_resource_types::rsrc_q_t* rq = NULL;
+  uvm_root* top = NULL;
+  uvm_coreservice_t* cs = NULL;
+
   std::string loc_instname = inst_name;  // local instance name, input is const
-  uvm_root* top = uvm_root::get();
+
+  cs = uvm_coreservice_t::get();
+  top = cs->get_root();
 
   if( cntxt == NULL )
     cntxt = top;
@@ -370,9 +382,11 @@ bool uvm_config_db<T>::exists( uvm_component* cntxt,
                                const std::string& field_name,
                                bool spell_chk )
 {
+  uvm_coreservice_t* cs = uvm_coreservice_t::get();
+
   std::string loc_inst_name = inst_name;
   if(cntxt == NULL)
-    cntxt = uvm_root::get();
+    cntxt = cs->get_root();
 
   if(inst_name.empty())
     loc_inst_name = cntxt->get_full_name();
@@ -399,14 +413,15 @@ void uvm_config_db<T>::wait_modified( uvm_component* cntxt,
   // TODO process
   //  process p = process::self();
   //  string rstate = p.get_randstate();
+  uvm_coreservice_t* cs = uvm_coreservice_t::get();
 
   m_uvm_waiter* waiter = NULL;
   std::string loc_inst_name = inst_name;
 
   if(cntxt == NULL)
-    cntxt = uvm_root::get();
+    cntxt = cs->get_root();
 
-  if(cntxt != uvm_root::get())
+  if(cntxt != cs->get_root())
   {
     if(!inst_name.empty())
       loc_inst_name = cntxt->get_full_name() + "." + inst_name;

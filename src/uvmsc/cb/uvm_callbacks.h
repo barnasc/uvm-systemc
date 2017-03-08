@@ -29,6 +29,8 @@
 
 #include "uvmsc/base/uvm_root.h"
 #include "uvmsc/base/uvm_object.h"
+#include "uvmsc/base/uvm_coreservice_t.h"
+#include "uvmsc/base/uvm_default_coreservice_t.h"
 #include "uvmsc/cb/uvm_typeid.h"
 #include "uvmsc/cb/uvm_typed_callbacks.h"
 #include "uvmsc/cb/uvm_callback.h"
@@ -261,19 +263,22 @@ void uvm_callbacks<T,CB>::add( T* obj, uvm_callback* cb, uvm_apprepend ordering 
     if (!m_base_inst->m_typename.empty())
       tnm = m_base_inst->m_typename;
     else
+    {
       if (obj != NULL)
         tnm = obj->get_type_name();
       else
         tnm = "uvm_object";
+    }
 
     uvm_report_error("CBUNREG",
-        "Null callback object cannot be registered with object " +
+        "NULL callback object cannot be registered with object " +
         nm + " (" + tnm + ")", UVM_NONE);
     return;
   }
 
-  if (!m_base_inst->check_registration(obj,cb))
+  if (!m_base_inst->check_registration(obj, cb))
   {
+    std::cout << "not registered obj/cb" << std::endl;
     if (obj == NULL)
       nm = "(*)";
     else
@@ -282,10 +287,12 @@ void uvm_callbacks<T,CB>::add( T* obj, uvm_callback* cb, uvm_apprepend ordering 
     if (!m_base_inst->m_typename.empty())
       tnm = m_base_inst->m_typename;
     else
+    {
       if(obj != NULL)
         tnm = obj->get_type_name();
       else
         tnm = "uvm_object";
+    }
 
     uvm_report_warning("CBUNREG",
         "Callback " + cb->get_name() + " cannot be registered with object " +
@@ -401,11 +408,12 @@ void uvm_callbacks<T,CB>::add_by_name( const std::string& name,
 {
   std::vector<uvm_component*> cq;
   uvm_root* top = NULL;
+  uvm_coreservice_t* cs = NULL;
   T* t = NULL;
 
   get();
 
-  top = uvm_root::get();
+  top = cs->get_root();
 
   if(cb == NULL)
   {
@@ -519,11 +527,12 @@ void uvm_callbacks<T,CB>::delete_by_name( const std::string& name,
 {
   std::vector<uvm_component*> cq;
   uvm_root* top = NULL;
+  uvm_coreservice_t* cs = NULL;
   T* t = NULL;
 
   get();
 
-  top = uvm_root::get();
+  top = cs->get_root();
 
   UVM_CB_TRACE_NOOBJ(cb, "Delete callback " + cb->get_name() + " by name from object(s) "
                      + name )

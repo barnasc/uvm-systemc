@@ -22,6 +22,8 @@
 //   permissions and limitations under the License.
 //----------------------------------------------------------------------
 
+#include "uvmsc/base/uvm_coreservice_t.h"
+#include "uvmsc/base/uvm_default_coreservice_t.h"
 #include "uvmsc/reg/uvm_mem.h"
 #include "uvmsc/reg/uvm_mem_mam.h"
 #include "uvmsc/reg/uvm_mem_region.h"
@@ -79,13 +81,12 @@ uvm_mem_mam::uvm_mem_mam( const std::string& name,
 
 uvm_mem_mam_cfg* uvm_mem_mam::reconfigure( uvm_mem_mam_cfg* cfg )
 {
-  uvm_root* top;
   uvm_mem_mam_cfg* reconf;
+  uvm_coreservice_t* cs = uvm_coreservice_t::get();
+  uvm_root* top = cs->get_root();
 
   if (cfg == NULL)
     return m_cfg;
-
-  top = uvm_root::get();
 
   // Cannot reconfigure n_bytes
   if (cfg->n_bytes != m_cfg->n_bytes) // TODO was !==

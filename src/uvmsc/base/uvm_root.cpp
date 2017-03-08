@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------
-//   Copyright 2012-2015 NXP B.V.
+//   Copyright 2012-2016 NXP B.V.
 //   Copyright 2014 Fraunhofer-Gesellschaft zur Foerderung
 //					der angewandten Forschung e.V.
 //   Copyright 2007-2011 Mentor Graphics Corporation
@@ -26,8 +26,11 @@
 #include <stdexcept>
 
 #include "uvmsc/base/uvm_root.h"
+#include "uvmsc/base/uvm_component.h"
 #include "uvmsc/base/uvm_component_name.h"
 #include "uvmsc/base/uvm_globals.h"
+#include "uvmsc/base/uvm_coreservice_t.h"
+#include "uvmsc/base/uvm_default_coreservice_t.h"
 #include "uvmsc/macros/uvm_message_defines.h"
 #include "uvmsc/phasing/uvm_phase.h"
 #include "uvmsc/phasing/uvm_common_phases.h"
@@ -36,9 +39,9 @@
 #include "uvmsc/print/uvm_printer.h"
 #include "uvmsc/print/uvm_table_printer.h"
 #include "uvmsc/print/uvm_printer_globals.h"
-#include "uvmsc/report/uvm_root_report_handler.h"
+#include "uvmsc/report/uvm_report_handler.h"
 #include "uvmsc/report/uvm_report_server.h"
-#include "uvmsc/report/uvm_report_catcher.h"
+#include "uvmsc/conf/uvm_resource_pool.h"
 
 using namespace sc_core;
 
@@ -62,7 +65,7 @@ namespace uvm {
 // Initialization static data members
 //----------------------------------------------------------------------
 
-uvm_root* uvm_root::m_root = NULL;
+
 bool uvm_root::m_uvm_timeout_overridable = true;
 
 //----------------------------------------------------------------------
@@ -80,18 +83,16 @@ uvm_root::uvm_root( uvm_component_name nm )
 
   m_uvm_timeout_overridable = true;
 
-  uvm_top = const_cast<uvm_root*>(m_root);
-
-  m_rh = new uvm_root_report_handler();
-  set_report_handler(m_rh);
+  m_rh->set_name("reporter");
 
   phases_registered = false;
 
   // create resource pool
   uvm_resource_pool::get();
 
-  // create factory
-  uvm_factory::get();
+  // Launch factory service
+  //uvm_coreservice_t* cs = uvm_coreservice_t::get();
+  //cs->get_factory();
 
   // print header
   m_uvm_header();
@@ -103,14 +104,8 @@ uvm_root::uvm_root( uvm_component_name nm )
 
 uvm_root::~uvm_root()
 {
-  // clean memory
-  delete m_rh;
-
   // delete resource pool
   uvm_resource_pool::cleanup();
-
-  // delete factory
-  uvm_factory::cleanup();
 }
 
 //----------------------------------------------------------------------
@@ -180,7 +175,7 @@ void uvm_root::die()
   // do the pre_abort callbacks
   m_do_pre_abort();
 
-  l_rs->summarize();
+  l_rs->report_summarize();
   throw std::runtime_error("Simulation terminated by uvm_root::die()");
 }
 
@@ -327,9 +322,7 @@ void uvm_root::print_topology( uvm_printer* printer )
   if (printer == NULL)
     uvm_report_error("NULLPRINTER", "uvm_default_printer is NULL");
 
-  uvm_report_info("UVMTOP", "UVM testbench topology:", UVM_LOW);
-
-  if (m_children.size()==0)
+  if (m_children.size() == 0)
   {
     uvm_report_warning("EMTCOMP", "print_topology - No UVM components to print.", UVM_NONE);
     return;
@@ -342,7 +335,8 @@ void uvm_root::print_topology( uvm_printer* printer )
     if(it->second->print_enabled)
       printer->print_object("", *(it->second));
   }
-  std::cout << printer->emit() << std::endl;
+
+  UVM_INFO("UVMTOP", "UVM testbench topology:\n" + printer->emit(), UVM_NONE);
 }
 
 //----------------------------------------------------------------------
@@ -414,6 +408,26 @@ void uvm_root::end_of_simulation()
 }
 
 //----------------------------------------------------------------------
+// member function: m_uvm_get_root (static)
+//
+//! Implementation defined
+//! Get the initialized singleton instance of uvm_root
+//----------------------------------------------------------------------
+
+uvm_root* uvm_root::m_uvm_get_root()
+{
+  static uvm_root* m_root = NULL;
+
+  if (m_root == NULL)
+  {
+    m_root = new uvm_root(sc_core::sc_module_name("uvm_top"));
+    m_root->m_domain = uvm_domain::get_uvm_domain();
+  }
+
+  return m_root;
+}
+
+//----------------------------------------------------------------------
 // member function: get (static)
 //
 //! Implementation defined
@@ -422,13 +436,8 @@ void uvm_root::end_of_simulation()
 
 uvm_root* uvm_root::get()
 {
-  if (m_root == NULL)
-  {
-    sc_core::sc_module_name name("uvm_top");
-    m_root = new uvm_root(name);
-    m_root->m_domain = uvm_domain::get_uvm_domain();
-  }
-  return m_root;
+  uvm_coreservice_t* cs = uvm_coreservice_t::get();
+  return cs->get_root();
 }
 
 //----------------------------------------------------------------------
@@ -480,7 +489,10 @@ void uvm_root::m_register_test( const std::string& test_name )
 
   if ( (comp_list.size() == 0) && (test_name.size() != 0) )
   {
-    uvm_test_top = uvm_factory::get()->create_component_by_name(
+    uvm_coreservice_t* cs = uvm_coreservice_t::get();
+    uvm_factory* factory = cs->get_factory();
+
+    uvm_test_top = factory->create_component_by_name(
       test_name, "", test_name, NULL);
 
     if (uvm_test_top == NULL)

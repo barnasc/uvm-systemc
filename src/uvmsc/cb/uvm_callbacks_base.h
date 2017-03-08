@@ -24,10 +24,12 @@
 #define UVM_CALLBACKS_BASE_H_
 
 #include <vector>
+#include <map>
 
-#include "uvmsc/conf/uvm_queue.h"
-#include "uvmsc/misc/uvm_misc.h"
-#include "uvmsc/cb/uvm_typeid.h"
+#include "uvmsc/base/uvm_object.h"
+#include "uvmsc/misc/uvm_misc.h"  // for uvm_apprepend
+#include "uvmsc/cb/uvm_typeid.h"  // for uvm_typeid_base
+#include "uvmsc/conf/uvm_queue.h" // for uvm_queue
 
 namespace uvm {
 

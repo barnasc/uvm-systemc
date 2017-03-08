@@ -28,6 +28,7 @@
 #include "uvmsc/base/uvm_void.h"
 #include "uvmsc/base/uvm_object.h"
 #include "uvmsc/base/uvm_globals.h"
+#include "uvmsc/print/uvm_printer.h"
 
 namespace uvm {
 

@@ -1,5 +1,5 @@
-//------------------------------------------------------------------------------
-//   Copyright 2013 NXP B.V.
+//----------------------------------------------------------------------
+//   Copyright 2016 NXP B.V.
 //   All Rights Reserved Worldwide
 //
 //   Licensed under the Apache License, Version 2.0 (the
@@ -15,16 +15,12 @@
 //   CONDITIONS OF ANY KIND, either express or implied.  See
 //   the License for the specific language governing
 //   permissions and limitations under the License.
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------
 
-#ifndef UVM_REPORT_H_
-#define UVM_REPORT_H_
+#ifndef UVM_STRING_DEFINES_H_
+#define UVM_STRING_DEFINES_H_
 
-#include "uvmsc/report/uvm_report_object.h"
-#include "uvmsc/report/uvm_report_catcher.h"
-#include "uvmsc/report/uvm_report_handler.h"
-#include "uvmsc/report/uvm_report_server.h"
-#include "uvmsc/report/uvm_report_message.h"
-#include "uvmsc/report/uvm_default_report_server.h"
+#define UVM_STRING_QUEUE_STREAMING_PACK(q) \
+  uvm::uvm_string_queue_join(q)
 
-#endif // UVM_REPORT_H_
+#endif

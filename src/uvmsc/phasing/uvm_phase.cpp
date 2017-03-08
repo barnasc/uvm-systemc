@@ -1035,7 +1035,9 @@ void uvm_phase::traverse( uvm_component* comp,
 
 void uvm_phase::execute_phase( bool proc )
 {
-  uvm_root* top = uvm_root::get();
+  uvm_coreservice_t* cs = uvm_coreservice_t::get();
+  uvm_root* top = cs->get_root();
+
   sc_process_handle m_phase_proc;
 
   // If we got here by jumping forward, we must wait for
@@ -1397,7 +1399,8 @@ void uvm_phase::execute_phase( bool proc )
 
 void uvm_phase::m_master_phase_process( uvm_phase* process_phase )
 {
-  uvm_root* top = uvm_root::get();
+  uvm_coreservice_t* cs = uvm_coreservice_t::get();
+  uvm_root* top = cs->get_root();
 
   //-----------
   // EXECUTING: (process phases)
@@ -1440,7 +1443,9 @@ void uvm_phase::m_wait_for_all_dropped()
 #if SYSTEMC_VERSION >= 20120701 // SystemC 2.3
 
   bool do_ready_to_end = false; // used for ready_to_end iterations
-  uvm_root* top = uvm_root::get();
+
+  uvm_coreservice_t* cs = uvm_coreservice_t::get();
+  uvm_root* top = cs->get_root();
 
   // OVM semantic: don't end until objection raised or stop request
   if (phase_done->get_objection_total(top) ||
@@ -1497,7 +1502,8 @@ void uvm_phase::m_wait_for_timeout()
 {
 #if SYSTEMC_VERSION >= 20120701 // SystemC 2.3
 
-  uvm_root* top = uvm_root::get();
+  uvm_coreservice_t* cs = uvm_coreservice_t::get();
+  uvm_root* top = cs->get_root();
 
   if (this->get_name() == "run") // only for run phase
   {
@@ -1905,13 +1911,14 @@ void uvm_phase::m_run_phases()
   if( std::getenv( "UVMSC_REGRESSION" ) != 0 )
     std::cerr << "UVMSC_REGRESSION_ENDED" << std::endl;
 
-  sc_core::wait(uvm_root::get()->m_phase_all_done_ev);
+  uvm_coreservice_t* cs = uvm_coreservice_t::get();
+  sc_core::wait(cs->get_root()->m_phase_all_done_ev);
 
   //TODO clean up after ourselves
   //phase_runner_proc.kill();
 
   uvm_report_server* rs = uvm_report_server::get_server();
-  rs->summarize();
+  rs->report_summarize();
 
   // soft stop (pause) simulation; return sc_start
   if ( sc_core::sc_get_status() == sc_core::SC_RUNNING )
@@ -1929,10 +1936,10 @@ void uvm_phase::m_run_phases()
 void uvm_phase::wait_for_self_and_siblings_to_drop()
 {
   bool need_to_check_all = true;
-  uvm_root* top;
   std::map<uvm_phase*, bool> siblings;
 
-  top = uvm_root::get();
+  uvm_coreservice_t* cs = uvm_coreservice_t::get();
+  uvm_root* top = cs->get_root();
 
   get_predecessors_for_successors(siblings);
 

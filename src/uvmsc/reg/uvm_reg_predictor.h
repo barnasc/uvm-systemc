@@ -315,21 +315,24 @@ template <typename BUSTYPE>
 void uvm_reg_predictor<BUSTYPE>::check_phase(uvm_phase& phase)
 {
   uvm_component::check_phase(phase);
+
   if (m_pending.size() > 0)
   {
+    std::vector<std::string> q;
     std::ostringstream str;
     str << "There are " << m_pending.size()
-        << " incomplete register transactions still pending completion:";
-    UVM_ERROR("PENDING REG ITEMS", str.str());
+        << " incomplete register transactions still pending completion:\n";
+    q.push_back(str.str());
 
-    /* TODO dead code?
     for( m_pending_itt it = m_pending.begin();
          it != m_pending.end();
          it++)
     {
-        uvm_reg* rg = (*it).first;
+      uvm_reg* rg = (*it).first;
+      q.push_back("\n" + rg->get_full_name());
     }
-    */
+
+    UVM_ERROR("PENDING REG ITEMS", UVM_STRING_QUEUE_STREAMING_PACK(q));
   }
 }
 

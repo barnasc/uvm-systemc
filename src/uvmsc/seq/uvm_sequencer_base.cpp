@@ -27,11 +27,13 @@
 
 #include "uvmsc/base/uvm_component.h"
 #include "uvmsc/base/uvm_component_name.h"
+#include "uvmsc/factory/uvm_object_wrapper.h"
 #include "uvmsc/seq/uvm_sequencer_base.h"
 #include "uvmsc/seq/uvm_sequencer.h"
 #include "uvmsc/seq/uvm_sequence_base.h"
 #include "uvmsc/seq/uvm_sequence_item.h"
 #include "uvmsc/conf/uvm_config_db.h"
+#include "uvmsc/print/uvm_printer.h"
 
 namespace uvm {
 
@@ -185,7 +187,9 @@ void uvm_sequencer_base::start_phase_sequence( uvm_phase& phase )
 {
   uvm_object_wrapper* wrapper = NULL;
   uvm_sequence_base* seq = NULL;
-  uvm_factory* f = uvm_factory::get();
+
+  uvm_coreservice_t* cs = uvm_coreservice_t::get();
+  uvm_factory* f = cs->get_factory();
 
   // default sequence instance?
   if (!uvm_config_db<uvm_sequence_base*>::get(

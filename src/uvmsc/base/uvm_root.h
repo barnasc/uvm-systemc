@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------
-//   Copyright 2012-2015 NXP B.V.
+//   Copyright 2012-2016 NXP B.V.
 //   Copyright 2007-2011 Mentor Graphics Corporation
 //   Copyright 2007-2011 Cadence Design Systems, Inc.
 //   Copyright 2010-2011 Synopsys, Inc.
@@ -26,15 +26,14 @@
 #include <systemc>
 
 #include "uvmsc/base/uvm_component.h"
-#include "uvmsc/report/uvm_report_object.h"
-#include "uvmsc/base/uvm_object_globals.h"
-#include "uvmsc/print/uvm_printer.h"
+
 
 namespace uvm {
 
 // forward class declarations
-class uvm_root_report_handler;
 class uvm_default_coreservice_t;
+class uvm_component;
+class uvm_component_name;
 
 //----------------------------------------------------------------------
 // Class: uvm_root
@@ -56,6 +55,8 @@ class uvm_root : public uvm_component
   //--------------------------------------------------------------------
 
   static uvm_root* get();
+
+  static uvm_root* m_uvm_get_root();
 
   //--------------------------------------------------------------------
   // Group: Simulation control
@@ -107,8 +108,6 @@ class uvm_root : public uvm_component
 
   bool m_finish_on_completion; // default set to true
 
-  uvm_root_report_handler* m_rh;
-
   void m_uvm_header();
 
   void before_end_of_elaboration();
@@ -130,8 +129,6 @@ class uvm_root : public uvm_component
 
 
   // data members
-
-  static uvm_root* m_root;
 
   bool m_phase_all_done;
   bool phases_registered;

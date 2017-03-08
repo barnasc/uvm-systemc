@@ -1,5 +1,5 @@
 //----------------------------------------------------------------------
-//   Copyright 2012-2015 NXP B.V.
+//   Copyright 2012-2016 NXP B.V.
 //   Copyright 2014 Fraunhofer-Gesellschaft zur Foerderung
 //					der angewandten Forschung e.V.
 //   Copyright 2007-2011 Mentor Graphics Corporation
@@ -32,12 +32,15 @@
 #include <functional>
 #include <iomanip>
 #include <sstream>
+#include <cstdarg>
 
 #include <systemc>
 
 #include "uvmsc/base/uvm_object_globals.h"
 #include "uvmsc/base/uvm_object.h"
 #include "uvmsc/base/uvm_root.h"
+#include "uvmsc/base/uvm_coreservice_t.h"
+#include "uvmsc/base/uvm_default_coreservice_t.h"
 
 using namespace sc_core;
 
@@ -262,6 +265,24 @@ std::string uvm_object_value_str( const uvm_object* v )
 }
 
 //----------------------------------------------------------------------
+// Global function: uvm_string_queue_join
+//
+//! Concatenates strings in a vector to a single string
+//----------------------------------------------------------------------
+
+const std::string uvm_string_queue_join( const std::vector<std::string>& q )
+{
+  std::string s;
+  s.clear();
+  s = "";
+
+  for( unsigned int i = 0; i < q.size(); i++ ) s += q[i];
+
+  return s;
+}
+
+
+//----------------------------------------------------------------------
 // Global function: uvm_toupper
 //
 //! Implementation defined
@@ -396,7 +417,10 @@ std::string uvm_sformatf(const char* format, ...)
 
 void enable_hdl_access(sc_core::sc_object* dut)
 {
-  uvm_root::get()->m_hdl_obj = dut;
+  uvm_coreservice_t* cs = uvm_coreservice_t::get();
+  uvm_root* top = cs->get_root();
+
+  top->m_hdl_obj = dut;
 }
 
 

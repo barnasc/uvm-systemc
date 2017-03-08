@@ -24,6 +24,7 @@
 
 #include <sstream>
 
+#include "uvmsc/base/uvm_component.h"
 #include "uvmsc/base/uvm_globals.h"
 #include "uvmsc/phasing/uvm_phase.h"
 #include "uvmsc/phasing/uvm_topdown_phase.h"

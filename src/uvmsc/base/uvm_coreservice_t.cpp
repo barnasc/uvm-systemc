@@ -1,5 +1,6 @@
 //----------------------------------------------------------------------
-//   Copyright 2012-2014 NXP B.V.
+//   Copyright 2013 Cadence Design Inc
+//   Copyright 2016 NXP B.V.
 //   All Rights Reserved Worldwide
 //
 //   Licensed under the Apache License, Version 2.0 (the
@@ -17,21 +18,26 @@
 //   permissions and limitations under the License.
 //----------------------------------------------------------------------
 
-#ifndef UVM_BASE_H_
-#define UVM_BASE_H_
-
-#include "uvmsc/base/uvm_root.h"
 #include "uvmsc/base/uvm_coreservice_t.h"
 #include "uvmsc/base/uvm_default_coreservice_t.h"
-#include "uvmsc/base/uvm_component_name.h"
-#include "uvmsc/base/uvm_globals.h"
-#include "uvmsc/base/uvm_component.h"
-#include "uvmsc/base/uvm_object.h"
-#include "uvmsc/base/uvm_object_globals.h"
-#include "uvmsc/base/uvm_transaction.h"
-#include "uvmsc/base/uvm_port_base.h"
-#include "uvmsc/base/uvm_export_base.h"
-#include "uvmsc/base/uvm_event.h"
-#include "uvmsc/base/uvm_event_callback.h"
 
-#endif /* UVM_BASE_H_ */
+//////////////
+
+namespace uvm {
+
+//----------------------------------------------------------------------
+// Static member function
+//----------------------------------------------------------------------
+
+uvm_default_coreservice_t* uvm_coreservice_t::get()
+{
+  static uvm_default_coreservice_t* inst = NULL;
+
+  if (inst == NULL)
+    inst = new uvm_default_coreservice_t;
+
+  return inst;
+}
+
+} // namespace uvm
+

@@ -52,7 +52,10 @@
     return std::string(#__VA_ARGS__); } \
   typedef ::uvm::uvm_component_registry<__VA_ARGS__ > type_id; \
   static type_id* get_type() { return type_id::get(); } \
-
+  using ::uvm::uvm_report_object::uvm_report_info; \
+  using ::uvm::uvm_report_object::uvm_report_warning; \
+  using ::uvm::uvm_report_object::uvm_report_error; \
+  using ::uvm::uvm_report_object::uvm_report_fatal; \
 
 /* TODO need this macro addition?
   virtual uvm_component_wrapper get_object_type() const { \

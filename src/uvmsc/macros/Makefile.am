@@ -7,7 +7,8 @@ H_FILES = \
 	uvm_message_defines.h \
 	uvm_object_defines.h \
 	uvm_reg_defines.h \
-	uvm_sequence_defines.h
+	uvm_sequence_defines.h \
+	uvm_string_defines.h
 
 NO_H_FILES = 
 

@@ -31,6 +31,7 @@
 #define UVM_HDL_H_
 
 #include <systemc>
+#include <sstream>
 
 #include "uvmsc/base/uvm_globals.h"
 

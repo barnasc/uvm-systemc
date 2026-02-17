@@ -826,8 +826,7 @@ int uvm_reg_map::get_physical_addresses( uvm_reg_addr_t base_addr,
 
   // TODO usage of the address map
   //addr = new [0];
-
-  std::vector<uvm_reg_addr_t> addr2;
+  addr.clear();
 
   if (n_bytes <= 0)
   {
@@ -854,13 +853,13 @@ int uvm_reg_map::get_physical_addresses( uvm_reg_addr_t base_addr,
     {
     case UVM_LITTLE_ENDIAN:
     {
-      for( int i = 0; local_addr.size(); i++ )
+      for( size_t i = 0; i < local_addr.size(); i++ )
         local_addr[i] = base_addr + (i * multiplier);
       break;
     }
     case UVM_BIG_ENDIAN:
     {
-      for( int i = 0; local_addr.size(); i++ )
+      for( size_t i = 0; i < local_addr.size(); i++ )
       {
         n--;
         local_addr[i] = base_addr + (n * multiplier);
@@ -869,13 +868,13 @@ int uvm_reg_map::get_physical_addresses( uvm_reg_addr_t base_addr,
     }
     case UVM_LITTLE_FIFO:
     {
-      for( int i = 0; local_addr.size(); i++ )
+      for( size_t i = 0; i < local_addr.size(); i++ )
         local_addr[i] = base_addr;
       break;
     }
     case UVM_BIG_FIFO:
     {
-      for( int i = 0; local_addr.size(); i++ )
+      for( size_t i = 0; i < local_addr.size(); i++ )
         local_addr[i] = base_addr;
       break;
     }
@@ -929,10 +928,7 @@ int uvm_reg_map::get_physical_addresses( uvm_reg_addr_t base_addr,
           sys_addr);
 
       //TODO check eq addr = new [n + sys_addr.size()] (addr);
-      std::vector<uvm_reg_addr_t> tmp(addr);
-      addr.resize(n + sys_addr.size()); // resize, values lost, needs to be assigned again
-      addr = tmp;
-
+      addr.resize(n + sys_addr.size());
       for( unsigned int j = 0; j < sys_addr.size(); j++ )
         addr[n+j] = sys_addr[j];
     }

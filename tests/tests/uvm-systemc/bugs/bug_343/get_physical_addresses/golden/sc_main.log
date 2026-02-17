@@ -1,0 +1,25 @@
+SystemC Simulation
+UVM_INFO @ 0 s: reporter [RNTST] Running test bug_343_get_physical_addresses_test...
+UVM_INFO <removed by verify-uvm.pl> @ 0 s: bug_343_get_physical_addresses_test [BUG343] get_physical_addresses reg_ra local_base=0x0x00000000000000000 n_bytes=4
+UVM_INFO <removed by verify-uvm.pl> @ 0 s: bug_343_get_physical_addresses_test [BUG343] Expected addr list: [0x0x00000000000000200]
+UVM_INFO <removed by verify-uvm.pl> @ 0 s: bug_343_get_physical_addresses_test [BUG343] Actual addr list:   [0x0x00000000000000200] (size=1)
+UVM_INFO <removed by verify-uvm.pl> @ 0 s: bug_343_get_physical_addresses_test [BUG343] get_physical_addresses reg_rb local_base=0x0x00000000000000100 n_bytes=4
+UVM_INFO <removed by verify-uvm.pl> @ 0 s: bug_343_get_physical_addresses_test [BUG343] Expected addr list: [0x0x00000000000000300]
+UVM_INFO <removed by verify-uvm.pl> @ 0 s: bug_343_get_physical_addresses_test [BUG343] Actual addr list:   [0x0x00000000000000300] (size=1)
+UVM_INFO <removed by verify-uvm.pl> @ 0 s: bug_343_get_physical_addresses_test [BUG343] get_physical_addresses burst_first local_base=0x0x00000000000000000 n_bytes=8
+UVM_INFO <removed by verify-uvm.pl> @ 0 s: bug_343_get_physical_addresses_test [BUG343] Expected addr list: [0x0x00000000000000204, 0x0x00000000000000200]
+UVM_INFO <removed by verify-uvm.pl> @ 0 s: bug_343_get_physical_addresses_test [BUG343] Actual addr list:   [0x0x00000000000000204, 0x0x00000000000000200] (size=2)
+UVM_INFO <removed by verify-uvm.pl> @ 0 s: bug_343_get_physical_addresses_test [BUG343] get_physical_addresses burst_second local_base=0x0x00000000000000100 n_bytes=8
+UVM_INFO <removed by verify-uvm.pl> @ 0 s: bug_343_get_physical_addresses_test [BUG343] Expected addr list: [0x0x00000000000000304, 0x0x00000000000000300]
+UVM_INFO <removed by verify-uvm.pl> @ 0 s: bug_343_get_physical_addresses_test [BUG343] Actual addr list:   [0x0x00000000000000304, 0x0x00000000000000300] (size=2)
+UVM_INFO <removed by verify-uvm.pl> @ 0 s: reporter [UVM/REPORT/SERVER]
+--- UVM Report Summary ---
+** Report counts by severity
+UVM_INFO      :  13
+UVM_WARNING   :   0
+UVM_ERROR     :   0
+UVM_FATAL     :   0
+** Report counts by id
+[BUG343]               12
+[RNTST]                 1
+UVM_INFO @ 0 s: reporter [FINISH] UVM-SystemC phasing completed; simulation finished
